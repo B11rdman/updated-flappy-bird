@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "allowSyntheticDefaultImports": true,
+    "module": "commonjs",
+    "target": "esnext",
+    "downlevelIteration": true,
+    "skipLibCheck": true,
+    "allowUmdGlobalAccess": true,
+    "importHelpers": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "paths": {
+      "mini-signals": ["node_modules/resource-loader/typings/mini-signals.d.ts"]
+    },
+    "baseUrl": "./"
+  },
+  "exclude": ["node_modules"]
+}
