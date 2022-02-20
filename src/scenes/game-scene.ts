@@ -17,6 +17,8 @@ export class GameScene extends Phaser.Scene {
   private _overlap: Phaser.Physics.Arcade.Collider;
   private _state: string = GAME_STATE.undefined;
 
+  private _isPressed = false;
+
   public create(): void {
     this.events.on("stateUpdate", (newState: string) => this._onStateUpdate(newState));
 
@@ -58,26 +60,30 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  private _onPointerDown(e: MouseEvent | TouchEvent): void {
-    if (e.cancelable) {
-      e.preventDefault();
-    }
+  private _onPointerDown(e: PointerEvent): void {
+    this._isPressed = !this._isPressed;
 
-    switch (this._state) {
-      case GAME_STATE.action:
-        this._bird.jump();
-        break;
-      case GAME_STATE.preAction:
-        this._setGameState(GAME_STATE.action);
-        this._startAction();
-        break;
-      case GAME_STATE.result:
-        this._popup.destroy();
-        this._setGameState(GAME_STATE.preAction);
-        break;
+    if (!this._isPressed) {
+      if (e.cancelable) {
+        e.preventDefault();
+      }
 
-      default:
-        break;
+      switch (this._state) {
+        case GAME_STATE.action:
+          this._bird.jump();
+          break;
+        case GAME_STATE.preAction:
+          this._setGameState(GAME_STATE.action);
+          this._startAction();
+          break;
+        case GAME_STATE.result:
+          this._popup.destroy();
+          this._setGameState(GAME_STATE.preAction);
+          break;
+
+        default:
+          break;
+      }
     }
   }
 
@@ -131,7 +137,7 @@ export class GameScene extends Phaser.Scene {
   private _buildBg(): void {
     this._bg = this.add.tileSprite(256, 256, 512, 512, TEXTURES, "bg.png");
     this._bg.setInteractive();
-    this._bg.on("pointerdown", (e: MouseEvent) => this._onPointerDown(e));
+    this._bg.on("pointerdown", (e: PointerEvent) => this._onPointerDown(e));
   }
 
   private _buildBird(): void {
@@ -144,7 +150,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private _buildPipe(): void {
-    this.add.existing((this._pipes = new PipesComponent(this, 400)));
+    this.add.existing((this._pipes = new PipesComponent(this, 400, this._score)));
     this._pipes.setDepth(1);
     this._overlap = this.physics.add.overlap(this._bird, [...this._pipes.getPipes()], () => this._onCollision());
     this._pipes.on("outOfScreen", () => this._destroyPipes());

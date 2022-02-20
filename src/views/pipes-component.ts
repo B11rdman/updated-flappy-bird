@@ -5,7 +5,7 @@ export class PipesComponent extends Phaser.Physics.Arcade.Group {
   public pipeBottom: Phaser.Physics.Arcade.Sprite;
   public pipeTop: Phaser.Physics.Arcade.Sprite;
 
-  public constructor(public scene: Phaser.Scene, private _x: number) {
+  public constructor(public scene: Phaser.Scene, private _x: number, private _score: number) {
     super(scene.physics.world, scene);
 
     this._setup();
@@ -31,7 +31,7 @@ export class PipesComponent extends Phaser.Physics.Arcade.Group {
     const pipe1Y = Math.random() * 150 + 380;
     const pipe1 = this.scene.physics.add.sprite(this._x, pipe1Y, TEXTURES, "pipe-1.png");
 
-    const pipe2Y = pipe1Y - pipe1.height - (Math.random() * 80 + 100);
+    const pipe2Y = pipe1Y - pipe1.height - (Math.random() * 80 + 100) + this._score * 2;
     const pipe2 = this.scene.physics.add.sprite(this._x, pipe2Y, TEXTURES, "pipe-2.png");
 
     pipe1.setImmovable(true);
