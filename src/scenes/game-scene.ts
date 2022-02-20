@@ -91,9 +91,11 @@ export class GameScene extends Phaser.Scene {
       this._bird.body.velocity.y = 0;
     }
 
+    const speed = this._getSpeed();
+
     this._bird.update();
-    this._bg.tilePositionX += CONFIGS.speed;
-    this._pipes.move();
+    this._bg.tilePositionX += speed;
+    this._pipes.move(speed);
   }
 
   private _dieUpdates(): void {
@@ -192,5 +194,9 @@ export class GameScene extends Phaser.Scene {
   private _changeLocalStorage(): void {
     this._bestScore = Math.max(this._score, this._bestScore);
     localStorage.setItem(STORAGE_NAME, `${this._bestScore}`);
+  }
+
+  private _getSpeed(): number {
+    return CONFIGS.speed + this._score * 0.1;
   }
 }

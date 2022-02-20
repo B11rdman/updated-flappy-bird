@@ -8,7 +8,7 @@ export const CONFIGS: {
 } = {
   speed: 2,
   birdGravity: 800,
-  birdJump: 300,
+  birdJump: 200,
 };
 
 export const getBirdAnimationConfig = (): Phaser.Types.Animations.Animation => {

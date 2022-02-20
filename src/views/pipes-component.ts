@@ -1,5 +1,4 @@
 import * as Phaser from "phaser";
-import { CONFIGS } from "../configs";
 import { TEXTURES } from "../constants";
 
 export class PipesComponent extends Phaser.Physics.Arcade.Group {
@@ -21,17 +20,19 @@ export class PipesComponent extends Phaser.Physics.Arcade.Group {
     return [this.pipeTop, this.pipeBottom];
   }
 
-  public move(): void {
-    this.pipeTop.x -= CONFIGS.speed;
-    this.pipeBottom.x -= CONFIGS.speed;
+  public move(speed: number): void {
+    this.pipeTop.x -= speed;
+    this.pipeBottom.x -= speed;
 
     this.pipeTop.x <= -this.pipeTop.width / 2 && this.emit("outOfScreen");
   }
 
   private _setup(): void {
-    const pipe1 = this.scene.physics.add.sprite(this._x, 500, TEXTURES, "pipe-1.png");
-    const y = pipe1.y - pipe1.height - (Math.random() * 40 + 200);
-    const pipe2 = this.scene.physics.add.sprite(this._x, y, TEXTURES, "pipe-2.png");
+    const pipe1Y = Math.random() * 150 + 380;
+    const pipe1 = this.scene.physics.add.sprite(this._x, pipe1Y, TEXTURES, "pipe-1.png");
+
+    const pipe2Y = pipe1Y - pipe1.height - (Math.random() * 80 + 100);
+    const pipe2 = this.scene.physics.add.sprite(this._x, pipe2Y, TEXTURES, "pipe-2.png");
 
     pipe1.setImmovable(true);
     pipe2.setImmovable(true);
