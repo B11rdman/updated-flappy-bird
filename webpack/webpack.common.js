@@ -31,7 +31,7 @@ module.exports = () => {
 
     plugins: [
       new htmlWebpackPlugin({
-        title: "Learn",
+        title: "Flappy bird implementation by Birdman",
         template: PATHS.html,
       }),
       new copyPlugin({

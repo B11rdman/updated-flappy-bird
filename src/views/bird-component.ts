@@ -1,5 +1,5 @@
 import * as Phaser from "phaser";
-import { CONFIGS, getBirdAnimationConfig } from "../configs";
+import { birdAnimationConfig, CONFIGS } from "../configs";
 import { BIRD_SHEET } from "../constants";
 
 export class BirdComponent extends Phaser.Physics.Arcade.Sprite {
@@ -44,7 +44,7 @@ export class BirdComponent extends Phaser.Physics.Arcade.Sprite {
   }
 
   private _initialSetup(): void {
-    this.anims.create(getBirdAnimationConfig());
+    this.anims.create(birdAnimationConfig);
     this.play({ key: "fly", repeat: -1 });
   }
 }

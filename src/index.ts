@@ -23,6 +23,4 @@ const config: Phaser.Types.Core.GameConfig = {
   },
 };
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-window.game = new Game(config);
+new Game(config);

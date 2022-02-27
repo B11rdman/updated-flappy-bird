@@ -11,11 +11,9 @@ export const CONFIGS: {
   birdJump: 200,
 };
 
-export const getBirdAnimationConfig = (): Phaser.Types.Animations.Animation => {
-  return {
-    key: "fly",
-    frames: BIRD_SHEET,
-    frameRate: 12,
-    repeat: -1,
-  };
+export const birdAnimationConfig: Phaser.Types.Animations.Animation = {
+  key: "fly",
+  frames: BIRD_SHEET,
+  frameRate: 12,
+  repeat: -1,
 };
