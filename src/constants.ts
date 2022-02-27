@@ -8,10 +8,10 @@ export const BIRD_SHEET = "bird";
 
 export const STORAGE_NAME = "bestFlappyBirdScore";
 
-export const GAME_STATE = {
-  undefined: "undefined",
-  preAction: "pre_action",
-  action: "action",
-  die: "die",
-  result: "result",
-};
+export enum GameState {
+  undefined,
+  preAction,
+  action,
+  die,
+  result,
+}

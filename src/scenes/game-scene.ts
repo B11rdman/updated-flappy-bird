@@ -1,6 +1,6 @@
 import * as Phaser from "phaser";
 import { CONFIGS } from "../configs";
-import { GAME_STATE, STORAGE_NAME, TEXTURES } from "../constants";
+import { GameState, STORAGE_NAME, TEXTURES } from "../constants";
 import { BirdComponent } from "../views/bird-component";
 import { PipesComponent } from "../views/pipes-component";
 import { PopupComponent } from "../views/popup-component";
@@ -15,26 +15,22 @@ export class GameScene extends Phaser.Scene {
   private _bestScore = 0;
   private _scoreText: Phaser.GameObjects.Text;
   private _overlap: Phaser.Physics.Arcade.Collider;
-  private _state: string = GAME_STATE.undefined;
-
-  private _isPressed = false;
+  private _state: GameState = GameState.undefined;
 
   public create(): void {
-    this.events.on("stateUpdate", (newState: string) => this._onStateUpdate(newState));
-
     this._buildBg();
     this._buildBird();
     this._drawScore();
 
-    this._setGameState(GAME_STATE.preAction);
+    this._setGameState(GameState.preAction);
   }
 
   public update(): void {
     switch (this._state) {
-      case GAME_STATE.action:
+      case GameState.action:
         this._actionsUpdates();
         break;
-      case GAME_STATE.die:
+      case GameState.die:
         this._dieUpdates();
         break;
 
@@ -43,16 +39,16 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  private _onStateUpdate(state: string): void {
-    switch (state) {
-      case GAME_STATE.preAction:
+  private _onStateUpdate(): void {
+    switch (this._state) {
+      case GameState.preAction:
         this._reset();
         break;
-      case GAME_STATE.result:
+      case GameState.result:
         this._showPopup();
         this._changeLocalStorage();
         break;
-      case GAME_STATE.die:
+      case GameState.die:
         this._bird.die();
         break;
       default:
@@ -60,36 +56,32 @@ export class GameScene extends Phaser.Scene {
     }
   }
 
-  private _onPointerDown(e: PointerEvent): void {
-    this._isPressed = !this._isPressed;
+  private _onPointerDown(e: Phaser.Input.Pointer): void {
+    if (e.wasTouch) {
+      return;
+    }
 
-    if (!this._isPressed) {
-      if (e.cancelable) {
-        e.preventDefault();
-      }
+    switch (this._state) {
+      case GameState.action:
+        this._bird.jump();
+        break;
+      case GameState.preAction:
+        this._setGameState(GameState.action);
+        this._startAction();
+        break;
+      case GameState.result:
+        this._popup.destroy();
+        this._setGameState(GameState.preAction);
+        break;
 
-      switch (this._state) {
-        case GAME_STATE.action:
-          this._bird.jump();
-          break;
-        case GAME_STATE.preAction:
-          this._setGameState(GAME_STATE.action);
-          this._startAction();
-          break;
-        case GAME_STATE.result:
-          this._popup.destroy();
-          this._setGameState(GAME_STATE.preAction);
-          break;
-
-        default:
-          break;
-      }
+      default:
+        break;
     }
   }
 
   private _actionsUpdates(): void {
     if (this._bird.y > this.game.config.height) {
-      this._setGameState(GAME_STATE.die);
+      this._setGameState(GameState.die);
     }
 
     if (this._bird.y <= 0) {
@@ -108,14 +100,14 @@ export class GameScene extends Phaser.Scene {
     if (this._bird.y > +this.game.config.height) {
       this._bird.y = +this.game.config.height - 5;
       this._bird.disablePhysics();
-      this._setGameState(GAME_STATE.result);
+      this._setGameState(GameState.result);
     }
   }
 
-  private _setGameState(state: string): void {
+  private _setGameState(state: GameState): void {
     if (this._state !== state) {
-      this.events.emit("stateUpdate", state);
       this._state = state;
+      this._onStateUpdate();
     }
   }
 
@@ -137,7 +129,7 @@ export class GameScene extends Phaser.Scene {
   private _buildBg(): void {
     this._bg = this.add.tileSprite(256, 256, 512, 512, TEXTURES, "bg.png");
     this._bg.setInteractive();
-    this._bg.on("pointerdown", (e: PointerEvent) => this._onPointerDown(e));
+    this._bg.on("pointerdown", (e: Phaser.Input.Pointer) => this._onPointerDown(e));
   }
 
   private _buildBird(): void {
@@ -194,7 +186,7 @@ export class GameScene extends Phaser.Scene {
   }
 
   private _onCollision(): void {
-    this._setGameState(GAME_STATE.die);
+    this._setGameState(GameState.die);
   }
 
   private _changeLocalStorage(): void {
